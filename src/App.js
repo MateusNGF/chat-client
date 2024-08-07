@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import  {ProfileSettingModal }  from './components/index.js';
 import { formartDate } from './utils';
+import { Button, Form } from 'react-bootstrap';
 
 
 function App() {
@@ -131,7 +132,7 @@ function App() {
                   <button type="button" data-mdb-button-init data-mdb-ripple-init className="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Let's Chat
                     App</button>
                 </div>
-                <div className="card-body" data-mdb-perfect-scrollbar-init>
+                <div className="card-body" data-mdb-perfect-scrollbar-init style={{ height: '400px', overflowY: 'scroll', overflowAnchor: 'revert', wordBreak: 'break-word' }}>
                       <div hidden={messages.length} className="divider d-flex align-items-center mb-4">
                         <p className="text-center mx-3 mb-0" style={{ color: '#a2aab7' }}>Nenhuma mensagem</p>
                       </div>
