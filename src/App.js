@@ -177,9 +177,9 @@ function App() {
                 <div className="card-footer text-muted d-flex justify-content-start align-items-center p-3">
                   <img src={profile?.picture} alt={profile?.username} style={{width: '40px',height: '100%'}} />
                   <input type="text" ref={textInput} className="form-control form-control-lg" id="exampleFormControlInput1" onSubmit={sendMessage} placeholder="Type message" />
-                  <a className="ms-1 text-muted" href="#!"><FontAwesomeIcon icon="paperclip"/></a>
-                  <a className="ms-3 text-muted" href="#!"><FontAwesomeIcon icon="smile"/></a>
-                  <a className="ms-3" href="#!" onClick={sendMessage}><FontAwesomeIcon icon="paper-plane"/></a>
+                  {/* <a className="ms-1 text-muted" href="#!"><FontAwesomeIcon icon="paperclip"/></a> */}
+                  {/* <a className="ms-3 text-muted" href="#!"><FontAwesomeIcon icon="smile"/></a> */}
+                  <a className="ms-3" href="#!" onClick={sendMessage}><FontAwesomeIcon size='lg' icon="paper-plane"/></a>
                 </div>
               </div>
 
