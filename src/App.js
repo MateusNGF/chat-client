@@ -32,7 +32,7 @@ function App() {
       const normalize = await event.data.text();
       const message = JSON.parse(normalize);
 
-      setMessages((prev) => [...prev, message]);
+      sendMessageToStack(message)
     };
 
     setWs(socket);
@@ -41,6 +41,41 @@ function App() {
     };
   }
 
+  function sendMessageToStack(incomingMSG) {
+    setMessages((stackMSG) => {
+      const indexLastMSG = stackMSG.length - 1;
+      const lastMessage = Object.assign({}, stackMSG[indexLastMSG]);
+
+      const lastMSGIsSomeoneUser = lastMessage?.username === incomingMSG.username;
+      console.log({ lastMSGIsSomeoneUser, lastMessage});
+      if (lastMSGIsSomeoneUser) {
+        return stackMSG.map((msg, index) => {
+           if (index !== indexLastMSG) return msg
+
+           return {
+             ...msg,
+             messages: [...msg.messages, incomingMSG.message],
+             timestamp: incomingMSG.timestamp
+           }
+        })
+      } else {
+        return [
+          ...stackMSG,
+          {
+            username: incomingMSG.username,
+            picture: incomingMSG.picture,
+            messages: [incomingMSG.message],
+            timestamp: incomingMSG.timestamp,
+            echo: !!incomingMSG.echo
+          }
+        ]
+      }
+    });
+
+
+    console.log({ messages })
+  }
+  
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -53,10 +88,10 @@ function App() {
       timestamp: new Date().toISOString()
     }
 
-    setMessages((prev) => [...prev, {
+    sendMessageToStack({
       ...message,
       echo: true
-    }]);
+    })
 
     const { value } = textInput.current
     value && ws.send(JSON.stringify(message));
@@ -97,35 +132,44 @@ function App() {
                     App</button>
                 </div>
                 <div className="card-body" data-mdb-perfect-scrollbar-init>
-                  {
-                    !messages.length ? (
-                      <div className="divider d-flex align-items-center mb-4">
+                      <div hidden={messages.length} className="divider d-flex align-items-center mb-4">
                         <p className="text-center mx-3 mb-0" style={{ color: '#a2aab7' }}>Nenhuma mensagem</p>
                       </div>
-                    ) : (
-                      messages.map((content, index) => (
-                        content.echo ? (
-                          <div className="d-flex flex-row justify-content-start mb-4" key={index}>
-                            <img src={content.picture} alt="avatar 1" style={{ width: '45px', height: '100%' }} />
-                            <div>
-                              <p className="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">{content.message}</p>
-                              <p className="small ms-3 mb-3 rounded-3 text-muted">{formartDate(content.timestamp)} | {content.username}</p>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="d-flex flex-row justify-content-end mb-4 pt-1" key={index}>
-                            <div>
-                              <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{content.message}</p>
-                              <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
-                                {formartDate(content.timestamp)} | {content.username}
-                              </p>
-                            </div>
-                            <img src={content.picture} alt="avatar 1" style={{ width: '45px', height: '100%' }} />
-                          </div>
-                        )
-                      ))
-                    )
-                  }
+                      <div hidden={!messages.length}>
+                        {
+                          messages.map((content, index) => {
+                            if (content.echo) {
+                              return (
+                                <div className="d-flex flex-row justify-content-start mb-4" key={index}>
+                                  <img src={content.picture} alt={content.username} style={{ width: '45px', height: '45px' }} />
+                                  <div>
+                                    {content?.messages.map(message => 
+                                      <p className="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">{message}</p>
+                                    )}
+                                    <p className="small ms-3 mb-3 rounded-3 text-muted">
+                                      {formartDate(content.timestamp) + ' | ' + content.username}
+                                    </p>
+                                  </div>
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div className="d-flex flex-row justify-content-end mb-4 pt-1" key={index}>
+                                  <div>
+                                    {content?.messages.map(message => 
+                                      <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{message}</p>
+                                    )}
+                                    <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
+                                      {formartDate(content.timestamp) + ' | ' + content.username}
+                                    </p>
+                                  </div>
+                                  <img src={content.picture} alt={content.username} style={{ width: '45px', height: '45px' }} />
+                                </div>
+                              );
+                            }
+                          })
+                        }
+                      </div>
 
 
                 </div>
