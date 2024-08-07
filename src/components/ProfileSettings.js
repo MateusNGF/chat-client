@@ -22,6 +22,7 @@ export function ProfileSettingModal({ show = true, incomingContent, onSubmit }) 
   
     const handleSubmit = (e) => {
       e.preventDefault();
+      if (!selectedImage) return alert("Selecione um imagem");
       onSubmit && onSubmit(formData);
     };
   
@@ -40,7 +41,9 @@ export function ProfileSettingModal({ show = true, incomingContent, onSubmit }) 
               <Form.Label>Nome de usuário:</Form.Label>
               <Form.Control
                 name="username"
-                value={formData.username || ''}
+                value={formData.username}
+                minLength={5}
+                maxLength={10}
                 type="text"
                 placeholder="XaulinMatadorDePorco"
                 autoFocus
@@ -55,10 +58,11 @@ export function ProfileSettingModal({ show = true, incomingContent, onSubmit }) 
                 {pictures.map((picture, index) => (
                   <Col xs={4} sm={4} md={2} key={index} className="mb-3">
                     <Card
-                      style={{ 
-                          cursor: 'pointer', 
-                          borderRadius: '100px', 
-                          border: selectedImage === picture.url ? '2px solid #007bff' : 'none' }}
+                      style={{
+                        cursor: 'pointer',
+                        borderRadius: '100px',
+                        border: selectedImage === picture.url ? '2px solid #007bff' : 'none'
+                      }}
                       onClick={() => handleImageSelect(picture.url)}
                     >
                       <Card.Img variant="top" src={picture.url} />
