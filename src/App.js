@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import  {ProfileSettingModal }  from './components/index.js';
 import { formartDate } from './utils';
 import { io } from 'socket.io-client';
+import { useCookies } from 'react-cookie';
 
 
 function App() {
@@ -11,6 +12,8 @@ function App() {
   const textInput = useRef(null);
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
+
+  const [cookies, setCookie] = useCookies(['profile']);
 
   const [ profile, setProfile ] = useState(null);
   const [ usersOnline, setusersOnline ] = useState(0);
@@ -102,6 +105,10 @@ function App() {
   };
 
   useEffect(() => {
+    console.log(cookies.profile)
+    if (!profile && cookies.profile) {
+      setProfile(cookies.profile);
+    }
     const closeConnectionCallback = initializeConnectionWithServer()
 
     return () => {
@@ -116,10 +123,17 @@ function App() {
           show={!profile}
           content={profile}
           onSubmit={(e) => {
-            setProfile({
+            const profile = {
               username: e.username,
               picture: e.picture
-            });
+            }
+            setProfile(profile);
+            setCookie('profile', profile, { 
+                path: '/',
+                expires: new Date(Date.now() + 1000 * 60 * 60 * 5) 
+            })
+
+            console.log(cookies)
           }}
         />
       </section>
@@ -131,7 +145,7 @@ function App() {
               <div className="card" id="chat2">
                 <div className="card-header d-flex justify-content-between align-items-center p-3">
                   <h5 className="mb-0">Chat</h5>
-                  <span id="online-users" class="badge bg-success me-2">{usersOnline} online</span>
+                  <span id="online-users" className="badge bg-success me-2">{usersOnline} online</span>
                   {/* <button type="button" data-mdb-button-init data-mdb-ripple-init className="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Let's Chat
                     App</button> */}
                 </div>
