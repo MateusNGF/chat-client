@@ -149,9 +149,12 @@ function App() {
                     App</button> */}
                 </div>
                 <div className="card-body" data-mdb-perfect-scrollbar-init style={{ height: '400px', overflowY: 'scroll', overflowAnchor: 'revert', wordBreak: 'break-word' }}>
-                      <div hidden={messages.length} className="divider d-flex align-items-center mb-4">
-                        <p className="text-center mx-3 mb-0" style={{ color: '#a2aab7' }}>Nenhuma mensagem</p>
-                      </div>
+                  <div className="divider d-flex align-items-center justify-content-center mb-4">
+                    <p hidden={!!messages.length} className="text-center mx-3 mb-0 small text-muted">
+                      Nenhuma mensagem
+                    </p>
+                  </div>
+
                       <div hidden={!messages.length}>
                         {
                           messages.map((content, index) => {
