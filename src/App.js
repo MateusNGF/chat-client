@@ -33,7 +33,7 @@ function App() {
       const normalize = await event.data.text();
       const message = JSON.parse(normalize);
 
-      sendMessageToStack(message)
+      sendMessageToStack(message.payload)
     };
 
     setWs(socket);
@@ -85,7 +85,9 @@ function App() {
     const message = {
       username: profile.username,
       picture: profile.picture,
-      message: textInput.current.value,
+      message: {
+        text: textInput.current.value
+      },
       timestamp: new Date().toISOString()
     }
 
@@ -95,7 +97,10 @@ function App() {
     })
 
     const { value } = textInput.current
-    value && ws.send(JSON.stringify(message));
+    value && ws.send(JSON.stringify({
+      type: "message",
+      payload: message
+    }));
     textInput.current.value = null;
   };
 
@@ -145,7 +150,7 @@ function App() {
                                   <img src={content.picture} alt={content.username} style={{ width: '45px', height: '45px' }} />
                                   <div>
                                     {content?.messages.map(message => 
-                                      <p className="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">{message}</p>
+                                      <p className="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">{message.text}</p>
                                     )}
                                     <p className="small ms-3 mb-3 rounded-3 text-muted">
                                       {formartDate(content.timestamp) + ' | ' + content.username}
@@ -158,7 +163,7 @@ function App() {
                                 <div className="d-flex flex-row justify-content-end mb-4 pt-1" key={index}>
                                   <div>
                                     {content?.messages.map(message => 
-                                      <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{message}</p>
+                                      <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{message.text}</p>
                                     )}
                                     <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
                                       {formartDate(content.timestamp) + ' | ' + content.username}
