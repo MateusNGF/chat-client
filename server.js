@@ -1,31 +1,47 @@
-const WebSocket = require('ws');
+const http = require('http');
+const { Server } = require('socket.io');
 
-const server = new WebSocket.Server({ port: 8080 });
+const server = http.createServer();
+const io = new Server(server, { 
+  cors: {
+    origin: "*", // Permitir todas as origens (não recomendado para produção)
+    methods: ["GET", "POST"]
+  }
+});
 
 const clients = new Set();
 
-server.on('connection', (ws) => {
-  console.log('Novo cliente conectado', ws.protocol);
-  clients.add(ws);
+io.on('connection', (socket) => {
+  console.log('Client connected');
+  clients.add(socket);
 
-  ws.on('message', (message) => {
-     broadcast(message, ws)
+  // Atualiza a quantidade de usuários online
+  io.emit('updateUsersOnline', { quantity: clients.size });
+
+  // Lida com mensagens recebidas de um cliente
+  socket.on('message', (message) => {
+      broadcast(message, socket);
   });
 
-  ws.on('close', () => {
-    clients.delete(ws);
-    console.log('Cliente desconectado');
+  // Lida com a desconexão do cliente
+  socket.on('disconnect', () => {
+      clients.delete(socket);
+      io.emit('updateUsersOnline', { quantity: clients.size });
   });
 });
 
+
 function broadcast(message, from) {
-    clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN && client !== from) {
-            console.log({message})
-            client.send(message);
-          }
-    })
+  clients.forEach((client) => {
+    if (client !== from) {
+      client.send(message);
+    }
+  })
 }
+
+server.listen(8080, () => {
+  console.log('Servidor rodando na porta 8080');
+});
 
 
 function randomGenerateID(){

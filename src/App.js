@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import  {ProfileSettingModal }  from './components/index.js';
 import { formartDate } from './utils';
-import { Button, Form } from 'react-bootstrap';
+import { io } from 'socket.io-client';
 
 
 function App() {
@@ -13,32 +13,36 @@ function App() {
   const [messages, setMessages] = useState([]);
 
   const [ profile, setProfile ] = useState(null);
+  const [ usersOnline, setusersOnline ] = useState(0);
 
   function initializeConnectionWithServer(){
-    const socket = new WebSocket('ws://localhost:8080');
+    const socket = io('ws://localhost:8080');
 
-    socket.onopen = () => {
+    socket.on('connect', () => {
       console.log("Connectado");
-    };
+    });
 
-    socket.onerror = (event) => {
-       console.error("Error:" + event.data);
-    }
+    socket.on('connect_error', (error) => {
+      console.error("Erro: " + error.message);
+    });
 
-    socket.onclose = () => {
+    socket.on('disconnect', () => {
       console.log("Desconectado");
-    };
+    });
 
-    socket.onmessage = async (event) => {
-      const normalize = await event.data.text();
-      const message = JSON.parse(normalize);
+    socket.on('updateUsersOnline', ({ quantity }) => {
+      setusersOnline(quantity); 
+    });
 
-      sendMessageToStack(message.payload)
-    };
+    socket.on('message', async (content) => {
+      const message = JSON.parse(content);
+
+      sendMessageToStack(message)
+    });
 
     setWs(socket);
     return () => {
-      socket.close();
+      socket.disconnect();
     };
   }
 
@@ -48,7 +52,6 @@ function App() {
       const lastMessage = Object.assign({}, stackMSG[indexLastMSG]);
 
       const lastMSGIsSomeoneUser = lastMessage?.username === incomingMSG.username;
-      console.log({ lastMSGIsSomeoneUser, lastMessage});
       if (lastMSGIsSomeoneUser) {
         return stackMSG.map((msg, index) => {
            if (index !== indexLastMSG) return msg
@@ -72,9 +75,6 @@ function App() {
         ]
       }
     });
-
-
-    console.log({ messages })
   }
   
 
@@ -97,10 +97,7 @@ function App() {
     })
 
     const { value } = textInput.current
-    value && ws.send(JSON.stringify({
-      type: "message",
-      payload: message
-    }));
+    value && ws.send(JSON.stringify(message));
     textInput.current.value = null;
   };
 
@@ -134,8 +131,9 @@ function App() {
               <div className="card" id="chat2">
                 <div className="card-header d-flex justify-content-between align-items-center p-3">
                   <h5 className="mb-0">Chat</h5>
-                  <button type="button" data-mdb-button-init data-mdb-ripple-init className="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Let's Chat
-                    App</button>
+                  <span id="online-users" class="badge bg-success me-2">{usersOnline} online</span>
+                  {/* <button type="button" data-mdb-button-init data-mdb-ripple-init className="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Let's Chat
+                    App</button> */}
                 </div>
                 <div className="card-body" data-mdb-perfect-scrollbar-init style={{ height: '400px', overflowY: 'scroll', overflowAnchor: 'revert', wordBreak: 'break-word' }}>
                       <div hidden={messages.length} className="divider d-flex align-items-center mb-4">
