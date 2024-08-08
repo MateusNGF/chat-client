@@ -132,8 +132,6 @@ function App() {
                 path: '/',
                 expires: new Date(Date.now() + 1000 * 60 * 60 * 5) 
             })
-
-            console.log(cookies)
           }}
         />
       </section>
