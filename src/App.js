@@ -5,6 +5,7 @@ import  {ProfileSettingModal }  from './components/index.js';
 import { formartDate } from './utils';
 import { io } from 'socket.io-client';
 import { useCookies } from 'react-cookie';
+import { Button } from 'react-bootstrap';
 
 
 function App() {
@@ -189,13 +190,13 @@ function App() {
 
 
                 </div>
-                <div className="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-                  <img src={profile?.picture} alt={profile?.username} style={{width: '40px',height: '100%'}} />
-                  <input type="text" ref={textInput} className="form-control form-control-lg" id="exampleFormControlInput1" onSubmit={sendMessage} placeholder="Type message" />
-                  {/* <a className="ms-1 text-muted" href="#!"><FontAwesomeIcon icon="paperclip"/></a> */}
-                  {/* <a className="ms-3 text-muted" href="#!"><FontAwesomeIcon icon="smile"/></a> */}
-                  <a className="ms-3" href="#!" onClick={sendMessage}><FontAwesomeIcon size='lg' icon="paper-plane"/></a>
-                </div>
+                <form onSubmit={sendMessage} className="card-footer text-muted d-flex justify-content-center align-items-center">
+                  <img src={profile?.picture} alt={profile?.username} className="rounded-circle me-2" style={{ width: '40px', height: '40px' }} />
+                  <input type="text" ref={textInput} className="form-control form-control-lg mx-2" placeholder="Escreva a mensagem" style={{ flex: 1 }} />
+                  <Button type="submit" className="btn btn-primary ms-2">
+                    <FontAwesomeIcon size="lg" icon="paper-plane" />
+                  </Button>
+                </form>
               </div>
 
             </div>
