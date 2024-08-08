@@ -12,23 +12,31 @@ const io = new Server(server, {
 const clients = new Set();
 
 io.on('connection', (socket) => {
-  console.log('Client connected');
-  clients.add(socket);
 
-  // Atualiza a quantidade de usuários online
-  io.emit('updateUsersOnline', { quantity: clients.size });
+  processSingInUser(socket);
 
-  // Lida com mensagens recebidas de um cliente
   socket.on('message', (message) => {
       broadcast(message, socket);
   });
-
-  // Lida com a desconexão do cliente
+  
   socket.on('disconnect', () => {
       clients.delete(socket);
       io.emit('updateUsersOnline', { quantity: clients.size });
   });
 });
+
+
+/**
+ * 
+ * @param {import('socket.io').Socket} socket 
+ */
+function processSingInUser(socket){
+  console.log('Client connected');
+  clients.add(socket);
+
+  // Atualiza a quantidade de usuários online
+  io.emit('updateUsersOnline', { quantity: clients.size });
+}
 
 
 function broadcast(message, from) {
