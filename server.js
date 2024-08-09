@@ -1,5 +1,6 @@
 const http = require('http');
 const { Server } = require('socket.io');
+const crypto = require('crypto');
 
 const server = http.createServer();
 const io = new Server(server, { 
@@ -10,6 +11,7 @@ const io = new Server(server, {
 });
 
 const clients = new Set();
+const groups = new Set();
 
 io.on('connection', (socket) => {
 
@@ -23,6 +25,30 @@ io.on('connection', (socket) => {
       clients.delete(socket);
       io.emit('updateUsersOnline', { quantity: clients.size });
   });
+
+
+  socket.on('createGroup', (payload, callback) => {
+
+    const handlerSettingGroupID = () => {
+      const id = randomGenerateID();
+      if (groups.has(id)) handlerSettingGroupID()
+      return id
+    }
+
+    const newGroup = {
+      id: handlerSettingGroupID(),
+      owner : payload,
+      subscribers : [socket]
+    }
+
+    groups.add(newGroup);
+
+    callback({
+        id : newGroup.id,
+        onlines: 1,
+        messages : []
+    });
+  })
 });
 
 
@@ -53,5 +79,5 @@ server.listen(8080, () => {
 
 
 function randomGenerateID(){
-    return crypto.randomBytes(2).toString('hex')
+    return crypto.randomBytes(3).toString('hex').toUpperCase();
 }

@@ -1,15 +1,20 @@
 import { Button, Container } from "react-bootstrap";
 import { formartDate } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 
 
-export function ChatContentComponent({messages, onSendMessage, profile}) {
-
+export function ChatContentComponent({group, onSendMessage, profile}) {
 
     const inputText = useRef(null);
+    const [messages, setMessages] = useState([])
+
+    useEffect(() => {
+        setMessages(group?.messages ?? []);
+    }, [group, group?.messages]);
+
 
     function onSubmit(e){
         e.preventDefault();
@@ -23,7 +28,7 @@ export function ChatContentComponent({messages, onSendMessage, profile}) {
 
 
     return (
-        <Container>
+        <Container hidden={!group}>
             <div className="card-body" data-mdb-perfect-scrollbar-init style={{ height: '400px', overflowY: 'scroll', overflowAnchor: 'revert', wordBreak: 'break-word' }}>
                 <div className="divider d-flex align-items-center justify-content-center mb-4">
                     <p hidden={!!messages.length} className="text-center mx-3 mb-0 small text-muted">

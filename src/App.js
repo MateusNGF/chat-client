@@ -12,6 +12,8 @@ function App() {
   const textInput = useRef(null);
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [groups, changeGroup] = useState([]);
+  const [currentChatGroup, setCurrentChatGroup] = useState(null);
 
   const [cookies, setCookie] = useCookies(['profile']);
 
@@ -50,7 +52,19 @@ function App() {
   }
 
   function sendMessageToStack(incomingMSG) {
-    setMessages((stackMSG) => {
+    const { message, groupId } = incomingMSG
+
+    changeGroup( (_groups) => {
+        return _groups.map( (group) => {
+          if (group.id != groupId) return group;
+
+          group.messages = handlerMessages(group.messages, message);
+
+          return group
+        })
+    })
+
+    function handlerMessages(stackMSG, incomingMSG){
       const indexLastMSG = stackMSG.length - 1;
       const lastMessage = Object.assign({}, stackMSG[indexLastMSG]);
 
@@ -77,7 +91,7 @@ function App() {
           }
         ]
       }
-    });
+    };
   }
   
 
@@ -91,18 +105,38 @@ function App() {
         text: text
       },
       timestamp: new Date().toISOString()
+    };
+
+    const payload = {
+      groupId: currentChatGroup,
+      message
     }
 
     sendMessageToStack({
-      ...message,
-      echo: true
+      ...payload,
+      message: {
+        ...message,
+        echo: true
+      }
     })
 
-    ws.send(JSON.stringify(message));
+    ws.send(JSON.stringify(payload));
   };
 
+  function processSignInGroup(){
+
+  }
+
+  function processCreateGroup(){
+     ws.emit('createGroup', cookies.profile, (groupContent) => {
+      if (groupContent.error) return alert(groupContent.error);
+
+      changeGroup((acc) => acc.concat(groupContent));
+      setCurrentChatGroup(groupContent.id);
+     });
+  }
+
   useEffect(() => {
-    console.log(cookies.profile)
     if (!profile && cookies.profile) {
       setProfile(cookies.profile);
     }
@@ -138,17 +172,24 @@ function App() {
         <Container className='py-5 '>
           <Row>
             <Col>
-                <TabsGroupComponent />
+                <TabsGroupComponent 
+                  groups={groups}
+                  selectedTab={currentChatGroup}
+                  onCreateGroup={processCreateGroup}
+                  onSignInGroup={processSignInGroup}
+                  onSelectGroup={setCurrentChatGroup}
+                />
             </Col>
           </Row>
           <Row>
+            
             <Container className='card'>
-              <HeaderGroupChat onlines={usersOnline} />
-              <ChatContentComponent
-                profile={profile}
-                messages={messages}
-                onSendMessage={sendMessage}
-              />
+              <HeaderGroupChat chatGroup={groups.find((group) => group.id === currentChatGroup)}/>
+                <ChatContentComponent
+                  profile={profile}
+                  group={groups.find((group) => group.id === currentChatGroup)}
+                  onSendMessage={sendMessage}
+                />
             </Container>
 
           </Row>
