@@ -43,8 +43,8 @@ export function ChatContentComponent({group, onSendMessage, profile}) {
                                     <div className="d-flex flex-row justify-content-start mb-4" key={index}>
                                         <img src={content.picture} alt={content.username} style={{ width: '45px', height: '45px' }} />
                                         <div>
-                                            {content?.messages.map(message =>
-                                                <p className="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">{message.text}</p>
+                                            {content?.messages.map((message, index2) =>
+                                                <p className="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary" key={index2}>{message.text}</p>
                                             )}
                                             <p className="small ms-3 mb-3 rounded-3 text-muted">
                                                 {formartDate(content.timestamp) + ' | ' + content.username}
@@ -56,8 +56,8 @@ export function ChatContentComponent({group, onSendMessage, profile}) {
                                 return (
                                     <div className="d-flex flex-row justify-content-end mb-4 pt-1" key={index}>
                                         <div>
-                                            {content?.messages.map(message =>
-                                                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{message.text}</p>
+                                            {content?.messages.map((message, index2) =>
+                                                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary" key={index2}>{message.text}</p>
                                             )}
                                             <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
                                                 {formartDate(content.timestamp) + ' | ' + content.username}

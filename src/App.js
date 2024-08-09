@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import  {ChatContentComponent, HeaderGroupChat, ProfileSettingModal }  from './components/index.js';
 import { io } from 'socket.io-client';
 import { useCookies } from 'react-cookie';
-import { Button, Row,Container, Col } from 'react-bootstrap';
+import { Button, Row,Container, Col, Card, Alert } from 'react-bootstrap';
 import { TabsGroupComponent } from './components/TabsGroup';
 
 
@@ -18,7 +18,6 @@ function App() {
   const [cookies, setCookie] = useCookies(['profile']);
 
   const [ profile, setProfile ] = useState(null);
-  const [ usersOnline, setusersOnline ] = useState(0);
 
   function initializeConnectionWithServer(){
     const socket = io('ws://localhost:8080');
@@ -35,8 +34,16 @@ function App() {
       console.log("Desconectado");
     });
 
-    socket.on('updateUsersOnline', ({ quantity }) => {
-      setusersOnline(quantity); 
+    socket.on('updateUsersOnline', (payload) => {
+      console.log({updateUsersOnline: payload})
+      const { groupId, quantity } = payload
+      changeGroup( (_groups) => {
+        return _groups.map( (group) => {
+          if (group.id != groupId) return group;
+          group.onlines = quantity;
+          return group
+        })
+      })
     });
 
     socket.on('message', async (content) => {
@@ -123,8 +130,16 @@ function App() {
     ws.send(JSON.stringify(payload));
   };
 
-  function processSignInGroup(){
-
+  function processSignInGroup(content){
+    const { groupId } = content
+    ws.emit('joinGroup', { groupId }, (groupContent) => {
+      console.log({
+        joinGroup: groupContent,
+      })
+      if (groupContent.error) return alert(groupContent.error);
+      changeGroup((acc) => acc.concat(groupContent));
+      setCurrentChatGroup(groupContent.id);
+    })
   }
 
   function processCreateGroup(){
@@ -170,6 +185,7 @@ function App() {
 
 
         <Container className='py-5 '>
+
           <Row>
             <Col>
                 <TabsGroupComponent 
@@ -182,8 +198,14 @@ function App() {
             </Col>
           </Row>
           <Row>
-            
-            <Container className='card'>
+
+            <Container hidden={!!groups.length} >
+              <Alert variant='warning' className='my-5 d-flex justify-content-center align-items-center'>
+                <h5>Nenhum grupo conectado ou criado.</h5>
+              </Alert>
+            </Container>
+
+            <Container hidden={!groups.length} className='card'>
               <HeaderGroupChat chatGroup={groups.find((group) => group.id === currentChatGroup)}/>
                 <ChatContentComponent
                   profile={profile}
