@@ -6,9 +6,9 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPaperclip, faSmile, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperclip, faSmile, faPaperPlane, faPlus, faSignInAlt} from '@fortawesome/free-solid-svg-icons';
 
-library.add(faPaperclip, faSmile, faPaperPlane);
+library.add(faPaperclip, faSmile, faPaperPlane, faPlus, faSignInAlt);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
