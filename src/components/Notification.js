@@ -48,7 +48,6 @@ export function ContainerNotificationToast({
 }) {
 
     useEffect(() => {
-        console.log(notifications)
     }, [notifications])
 
     return (

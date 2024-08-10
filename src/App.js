@@ -35,7 +35,6 @@ function App() {
     });
 
     socket.on('updateUsersOnline', (payload) => {
-      console.log({updateUsersOnline: payload})
       const { groupId, quantity } = payload
       changeGroup( (_groups) => {
         return _groups.map( (group) => {
@@ -137,9 +136,6 @@ function App() {
   function processSignInGroup(content){
     const { groupId } = content
     ws.emit('joinGroup', { groupId }, (groupContent) => {
-      console.log({
-        joinGroup: groupContent,
-      })
       if (groupContent.error) return alert(groupContent.error);
       changeGroup((acc) => acc.concat(groupContent));
       setCurrentChatGroup(groupContent.id);
