@@ -1,19 +1,19 @@
-import './App.css';
-import { useState, useEffect, useRef } from 'react';
-import  {ChatContentComponent, HeaderGroupChat, ProfileSettingModal }  from './components/index.js';
-import { io } from 'socket.io-client';
+import { useEffect, useRef, useState } from 'react';
+import { Alert, Col, Container, Row } from 'react-bootstrap';
 import { useCookies } from 'react-cookie';
-import { Button, Row,Container, Col, Card, Alert } from 'react-bootstrap';
+import { io } from 'socket.io-client';
+import './App.css';
 import { TabsGroupComponent } from './components/TabsGroup';
+import { ChatContentComponent, ContainerNotificationToast, HeaderGroupChat, ProfileSettingModal } from './components/index.js';
 
 
 function App() {
 
-  const textInput = useRef(null);
   const [ws, setWs] = useState(null);
-  const [messages, setMessages] = useState([]);
   const [groups, changeGroup] = useState([]);
   const [currentChatGroup, setCurrentChatGroup] = useState(null);
+
+  const [notifications, setNotifications] = useState([])
 
   const [cookies, setCookie] = useCookies(['profile']);
 
@@ -47,9 +47,13 @@ function App() {
     });
 
     socket.on('message', async (content) => {
-      const message = JSON.parse(content);
+      const incomingMSG = JSON.parse(content);
 
-      sendMessageToStack(message)
+      if (incomingMSG.groupId != currentChatGroup) {
+        addNotification(incomingMSG);
+      };
+
+      sendMessageToStack(incomingMSG)
     });
 
     setWs(socket);
@@ -151,6 +155,16 @@ function App() {
      });
   }
 
+  
+  function addNotification(message) {
+    setNotifications((stack) => stack.concat({
+      ...message,
+      onClose: () => setNotifications((currentStack) =>
+        currentStack.filter((_, i) => i !== stack.length)
+      )
+    }))
+  }
+
   useEffect(() => {
     if (!profile && cookies.profile) {
       setProfile(cookies.profile);
@@ -183,6 +197,9 @@ function App() {
       </section>
       <section hidden={!profile}	>
 
+        <ContainerNotificationToast
+          notifications={notifications}
+        />
 
         <Container className='py-5 '>
 
