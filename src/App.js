@@ -207,7 +207,6 @@ function App() {
                     <Card.Body>
                       <Row>
                         <Col md={6} lg={5} xl={4}  >
-
                             <TabsGroupComponent
                               groups={groups}
                               selectedTab={currentChatGroup}
@@ -219,14 +218,14 @@ function App() {
                         </Col>
                         <Col md={6} lg={7} xl={8}>
 
-                          <Card hidden={!groups.length}>
+                          <div hidden={!groups.length}>
                             <HeaderGroupChat chatGroup={groups.find((group) => group.id === currentChatGroup)} />
                             <ChatContentComponent
                               profile={profile}
                               group={groups.find((group) => group.id === currentChatGroup)}
                               onSendMessage={sendMessage}
                             />
-                          </Card>
+                          </div>
 
                         </Col>
                       </Row>

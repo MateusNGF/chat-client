@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { Card } from "react-bootstrap"
 
 export function HeaderGroupChat({
     chatGroup,
@@ -6,9 +7,9 @@ export function HeaderGroupChat({
 
     useEffect(() => {}, [chatGroup,  chatGroup?.onlines])
     return (
-        <div className="card-header d-flex justify-content-between align-items-center p-3">
+        <Card.Header className=" d-flex justify-content-between align-items-center px-2">
             <h5 className="mb-0">Chat: {chatGroup?.id}</h5>
             <span id="online-users" className="badge bg-success me-2">{chatGroup?.onlines} online</span>
-        </div>
+        </Card.Header>
     )
 }
