@@ -64,6 +64,7 @@ export function TabsGroupComponent({
                     </Container>
                     {groups?.map((group, index) => (
                         <CardGroupComponent
+                            key={index}
                             index={index}
                             group={group}
                             selectedTab={selectedTab}

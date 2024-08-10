@@ -1,7 +1,10 @@
 import moment from "moment/moment";
 
-export function formartDate(timestamp){
-    return new Date(timestamp).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
+export function formatDate(timestamp) {
+    return new Date(timestamp).toLocaleDateString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 }
 
 
@@ -16,11 +19,6 @@ export function timeSince(timestamp){
     const time = moment(timestamp);
 
     const minutes = now.diff(time, 'minutes');
-
-    console.log({
-        minutes,
-        timestamp
-    })
 
     if (minutes > 0) {
         return  `há ${minutes} minutos atrás`;
