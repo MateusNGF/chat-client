@@ -22,7 +22,7 @@ export function NotificationToast({
         const timeout = setTimeout(() => {
             setShow(false)
             onClose()
-        }, 90000)
+        }, 5000)
 
         return () => {
             clearTimeout(timeout)
