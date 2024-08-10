@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Container, Toast, ToastContainer } from 'react-bootstrap'
+import { timeSince } from '../utils'
 
 export function NotificationToast({
     content,
@@ -36,7 +37,7 @@ export function NotificationToast({
             <Toast.Header>
                 <img src={from.picture} className="rounded me-2" alt={from.username} style={{ width: '32px', height: '32px' }} />
                 <strong className="me-auto">{from.username}</strong>
-                <small className="text-muted">{message.timestamp}</small>
+                <small className="text-muted">{timeSince(message.timestamp)}</small>
             </Toast.Header>
             <Toast.Body>{message.text}</Toast.Body>
         </Toast>

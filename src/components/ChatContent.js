@@ -1,5 +1,5 @@
 import { Button, Container } from "react-bootstrap";
-import { formartDate } from "../utils";
+import { timeSince } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 
@@ -47,7 +47,7 @@ export function ChatContentComponent({group, onSendMessage, profile}) {
                                                 <p className="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary" key={index2}>{message.text}</p>
                                             )}
                                             <p className="small ms-3 mb-3 rounded-3 text-muted">
-                                                {formartDate(content.timestamp) + ' | ' + content.username}
+                                                {timeSince(content.timestamp) + ' | ' + content.username}
                                             </p>
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@ export function ChatContentComponent({group, onSendMessage, profile}) {
                                                 <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary" key={index2}>{message.text}</p>
                                             )}
                                             <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
-                                                {formartDate(content.timestamp) + ' | ' + content.username}
+                                                {timeSince(content.timestamp) + ' | ' + content.username}
                                             </p>
                                         </div>
                                         <img src={content.picture} alt={content.username} style={{ width: '45px', height: '45px' }} />
@@ -73,7 +73,7 @@ export function ChatContentComponent({group, onSendMessage, profile}) {
             </div>
             <form onSubmit={onSubmit} className="card-footer text-muted d-flex justify-content-center align-items-center">
                 <img src={profile?.picture} alt={profile?.username} className="rounded-circle me-2" style={{ width: '40px', height: '40px' }} />
-                <input type="text" ref={inputText} className="form-control form-control-lg mx-2" placeholder="Escreva a mensagem" style={{ flex: 1 }} />
+                <input type="text" ref={inputText} className="form-control form-control-lg mx-2" minLength={3} maxLength={300} placeholder="Escreva a mensagem" style={{ flex: 1 }} />
                 <Button type="submit" className="btn btn-primary ms-2">
                     <FontAwesomeIcon size="lg" icon="paper-plane" />
                 </Button>

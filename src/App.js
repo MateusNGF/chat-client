@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Alert, Col, Container, Row } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import {  Card, Col, Container, Row } from 'react-bootstrap';
 import { useCookies } from 'react-cookie';
 import { io } from 'socket.io-client';
 import './App.css';
@@ -17,9 +17,9 @@ function App() {
 
   const [cookies, setCookie] = useCookies(['profile']);
 
-  const [ profile, setProfile ] = useState(null);
+  const [profile, setProfile] = useState(null);
 
-  function initializeConnectionWithServer(){
+  function initializeConnectionWithServer() {
     const socket = io('ws://localhost:8080');
 
     socket.on('connect', () => {
@@ -36,8 +36,8 @@ function App() {
 
     socket.on('updateUsersOnline', (payload) => {
       const { groupId, quantity } = payload
-      changeGroup( (_groups) => {
-        return _groups.map( (group) => {
+      changeGroup((_groups) => {
+        return _groups.map((group) => {
           if (group.id != groupId) return group;
           group.onlines = quantity;
           return group
@@ -64,30 +64,30 @@ function App() {
   function sendMessageToStack(incomingMSG) {
     const { message, groupId } = incomingMSG
 
-    changeGroup( (_groups) => {
-        return _groups.map( (group) => {
-          if (group.id != groupId) return group;
+    changeGroup((_groups) => {
+      return _groups.map((group) => {
+        if (group.id != groupId) return group;
 
-          group.messages = handlerMessages(group.messages, message);
+        group.messages = handlerMessages(group.messages, message);
 
-          return group
-        })
+        return group
+      })
     })
 
-    function handlerMessages(stackMSG, incomingMSG){
+    function handlerMessages(stackMSG, incomingMSG) {
       const indexLastMSG = stackMSG.length - 1;
       const lastMessage = Object.assign({}, stackMSG[indexLastMSG]);
 
       const lastMSGIsSomeoneUser = lastMessage?.username === incomingMSG.username;
       if (lastMSGIsSomeoneUser) {
         return stackMSG.map((msg, index) => {
-           if (index !== indexLastMSG) return msg
+          if (index != indexLastMSG) return msg
 
-           return {
-             ...msg,
-             messages: [...msg.messages, incomingMSG.message],
-             timestamp: incomingMSG.timestamp
-           }
+          return {
+            ...msg,
+            messages: [...msg.messages, incomingMSG.message],
+            timestamp: incomingMSG.timestamp
+          }
         })
       } else {
         return [
@@ -103,7 +103,7 @@ function App() {
       }
     };
   }
-  
+
 
   const sendMessage = ({ text }) => {
     if (!ws) return;
@@ -133,7 +133,7 @@ function App() {
     ws.send(JSON.stringify(payload));
   };
 
-  function processSignInGroup(content){
+  function processSignInGroup(content) {
     const { groupId } = content
     ws.emit('joinGroup', { groupId }, (groupContent) => {
       if (groupContent.error) return alert(groupContent.error);
@@ -142,21 +142,21 @@ function App() {
     })
   }
 
-  function processCreateGroup(){
-     ws.emit('createGroup', cookies.profile, (groupContent) => {
+  function processCreateGroup() {
+    ws.emit('createGroup', cookies.profile, (groupContent) => {
       if (groupContent.error) return alert(groupContent.error);
 
       changeGroup((acc) => acc.concat(groupContent));
       setCurrentChatGroup(groupContent.id);
-     });
+    });
   }
 
-  
+
   function addNotification(message) {
     setNotifications((stack) => stack.concat({
       ...message,
       onClose: () => setNotifications((currentStack) =>
-        currentStack.filter((_, i) => i !== stack.length)
+        currentStack.filter((_, i) => i != stack.length)
       )
     }))
   }
@@ -184,9 +184,9 @@ function App() {
               picture: e.picture
             }
             setProfile(profile);
-            setCookie('profile', profile, { 
-                path: '/',
-                expires: new Date(Date.now() + 1000 * 60 * 60 * 5) 
+            setCookie('profile', profile, {
+              path: '/',
+              expires: new Date(Date.now() + 1000 * 60 * 60 * 5)
             })
           }}
         />
@@ -198,38 +198,48 @@ function App() {
         />
 
         <Container className='py-5 '>
-
-          <Row>
-            <Col>
-                <TabsGroupComponent 
-                  groups={groups}
-                  selectedTab={currentChatGroup}
-                  onCreateGroup={processCreateGroup}
-                  onSignInGroup={processSignInGroup}
-                  onSelectGroup={setCurrentChatGroup}
-                />
-            </Col>
-          </Row>
           <Row>
 
-            <Container hidden={!!groups.length} >
-              <Alert variant='warning' className='my-5 d-flex justify-content-center align-items-center'>
-                <h5>Nenhum grupo conectado ou criado.</h5>
-              </Alert>
-            </Container>
+            <Container className='py-5'>
+              <Row>
+                <Col md={12}>
+                  <Card style={{ borderRadius: '15px' }}>
+                    <Card.Body>
+                      <Row>
+                        <Col md={6} lg={5} xl={4}  >
 
-            <Container hidden={!groups.length} className='card'>
-              <HeaderGroupChat chatGroup={groups.find((group) => group.id === currentChatGroup)}/>
-                <ChatContentComponent
-                  profile={profile}
-                  group={groups.find((group) => group.id === currentChatGroup)}
-                  onSendMessage={sendMessage}
-                />
+                            <TabsGroupComponent
+                              groups={groups}
+                              selectedTab={currentChatGroup}
+                              onCreateGroup={processCreateGroup}
+                              onSignInGroup={processSignInGroup}
+                              onSelectGroup={setCurrentChatGroup}
+                            />
+
+                        </Col>
+                        <Col md={6} lg={7} xl={8}>
+
+                          <Card hidden={!groups.length}>
+                            <HeaderGroupChat chatGroup={groups.find((group) => group.id === currentChatGroup)} />
+                            <ChatContentComponent
+                              profile={profile}
+                              group={groups.find((group) => group.id === currentChatGroup)}
+                              onSendMessage={sendMessage}
+                            />
+                          </Card>
+
+                        </Col>
+                      </Row>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+
+
             </Container>
 
           </Row>
         </Container>
-
 
       </section>
     </div>
