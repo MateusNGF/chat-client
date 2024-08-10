@@ -49,9 +49,8 @@ io.on('connection', (socket) => {
                 if (group) {
                     group.subscribers.delete(socket);
                     if (group.subscribers.size === 0) {
-                        groups.delete(groupId); // Remove o grupo se não houver mais inscritos
+                        groups.delete(groupId); 
                     } else {
-                        // Notifica os usuários restantes
                         group.subscribers.forEach((subscriber) => {
                             subscriber.emit('updateUsersOnline', {
                                 quantity: group.subscribers.size,
@@ -65,7 +64,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Evento para criação de grupos
+
     socket.on('createGroup', (owner, callback) => {
         const groupId = generateUniqueGroupId();
         const newGroup = {
@@ -76,8 +75,8 @@ io.on('connection', (socket) => {
 
         groups.set(groupId, newGroup);
         const infoClient = clients.get(socket)
-        if (infoClient.groupsConnected.size > 2) {
-          return callback({ error: 'Limit of created groups reached, limit at 2 groups.' });
+        if (infoClient.groupsConnected.size + 1 > 4) {
+          return callback({ error: 'Limite de criação de grupos atingido, máximo de dois grupos permitido.' });
         }
 
         infoClient.groupsConnected.add(groupId); 
@@ -89,16 +88,16 @@ io.on('connection', (socket) => {
         });
     });
 
-    // Evento para ingresso em um grupo existente
+
     socket.on('joinGroup', ({ groupId }, callback) => {
         const group = groups.get(groupId); callback
 
         if (!group) {
-            return callback({ error: 'Group not found' });
+            return callback({ error: 'Código de grupo não encontrado.' });
         }
 
         if (group.subscribers.has(socket)) {
-            return callback({ error: 'Already joined' });
+            return callback({ error: 'Você já esta neste grupo.' });
         }
 
         group.subscribers.add(socket);
