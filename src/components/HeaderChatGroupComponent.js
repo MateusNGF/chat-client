@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { Card } from "react-bootstrap"
 
-export function HeaderGroupChat({
+export function HeaderChatGroupComponent({
     chatGroup,
 }){
 

@@ -3,8 +3,8 @@ import {  Card, Col, Container, Row } from 'react-bootstrap';
 import { useCookies } from 'react-cookie';
 import { io } from 'socket.io-client';
 import './App.css';
-import { TabsGroupComponent } from './components/TabsGroup';
-import { ChatContentComponent, ContainerNotificationToast, HeaderGroupChat, ProfileSettingModal } from './components/index.js';
+import { TabsGroupComponent } from './components/TabsGroupComponent';
+import { ChatContentComponent, ContainerNotificationToast, HeaderChatGroupComponent, ProfileSettingsComponent } from './components/index.js';
 
 
 function App() {
@@ -175,7 +175,7 @@ function App() {
   return (
     <div>
       <section>
-        <ProfileSettingModal
+        <ProfileSettingsComponent
           show={!profile}
           content={profile}
           onSubmit={(e) => {
@@ -219,7 +219,7 @@ function App() {
                         <Col>
 
                           <div hidden={!groups.length}>
-                            <HeaderGroupChat chatGroup={groups.find((group) => group.id === currentChatGroup)} />
+                            <HeaderChatGroupComponent chatGroup={groups.find((group) => group.id === currentChatGroup)} />
                             <ChatContentComponent
                               profile={profile}
                               group={groups.find((group) => group.id === currentChatGroup)}

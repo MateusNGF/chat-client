@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Container, Toast, ToastContainer } from 'react-bootstrap'
 import { timeSince } from '../utils'
 
-export function NotificationToast({
+export function NotificationComponent({
     content,
     onClose
 }) {
@@ -55,7 +55,7 @@ export function ContainerNotificationToast({
         <Container>
             <ToastContainer className="position-fixed top-0 end-0 p-3" style={{ zIndex: 1050 }}>
                 {notifications.map((notification, index) => (
-                    <NotificationToast
+                    <NotificationComponent
                         key={index}
                         content={notification}
                         onClose={() => notification?.onClose()}

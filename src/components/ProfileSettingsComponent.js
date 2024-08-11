@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 
-export function ProfileSettingModal({ show = true, incomingContent, onSubmit }) {
+export function ProfileSettingsComponent({ show = true, incomingContent, onSubmit }) {
     const [formData, setFormData] = useState(incomingContent || {});
     const [selectedImage, setSelectedImage] = useState(formData.profilePicture || '');
   
