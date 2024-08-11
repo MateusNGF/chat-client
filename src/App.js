@@ -198,8 +198,8 @@ function App() {
         />
 
         <Container className='py-5 '>
+          
           <Row>
-
             <Container className='py-5'>
               <Row>
                 <Col md={12}>
@@ -233,8 +233,6 @@ function App() {
                   </Card>
                 </Col>
               </Row>
-
-
             </Container>
             <Container>
               <Row lg={16} md={12} sm={12}>
@@ -268,6 +266,7 @@ function App() {
               </Row>
             </Container>
           </Row>
+
         </Container>
 
       </section>
