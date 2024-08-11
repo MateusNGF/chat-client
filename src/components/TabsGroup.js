@@ -55,7 +55,7 @@ export function TabsGroupComponent({
                 </Col>
             </div>
 
-            <div data-mdb-perfect-scrollbar-init style={{ position: "relative", height: "400px" }}>
+            <div data-mdb-perfect-scrollbar-init style={{ position: "relative", height: "400px", overflowY: "scroll", overflowAnchor: "revert", wordBreak: "break-word" }}>
                 <ul className="list-unstyled mb-0">
                     <Container hidden={!!groups.length} >
                         <Alert variant='warning' className='my-5 d-flex justify-content-center align-items-center'>
@@ -74,8 +74,8 @@ export function TabsGroupComponent({
                 </ul>
             </div>
 
-            <Modal show={showModalSignIn} centered>
-                <Modal.Header closeButton={() => setShowModalSignIn(false)}>
+            <Modal show={showModalSignIn} onHide={() => setShowModalSignIn(false)} centered>
+                <Modal.Header closeButton>
                     <Modal.Title>Insira o codigo</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

@@ -198,7 +198,7 @@ function App() {
         />
 
         <Container className='py-5 '>
-          
+
           <Row>
             <Container className='py-5'>
               <Row>
@@ -216,7 +216,7 @@ function App() {
                             />
 
                         </Col>
-                        <Col md={6} lg={7} xl={8}>
+                        <Col>
 
                           <div hidden={!groups.length}>
                             <HeaderGroupChat chatGroup={groups.find((group) => group.id === currentChatGroup)} />
