@@ -236,7 +236,37 @@ function App() {
 
 
             </Container>
-
+            <Container>
+              <Row lg={16} md={12} sm={12}>
+                <Col lg={4} md={4} className='py-4 '>
+                  <ins
+                    class="adsbygoogle"
+                    style={{ display: 'inline-block', backgroundColor: 'gray', width: '100%', height: '100%', border: '1px solid black'}}
+                    data-ad-format="fluid"
+                    data-ad-layout-key="-6t+ed+2i-1n-4w"
+                    data-ad-client="ca-pub-6974751803479290"
+                    data-ad-slot="7242885259"></ins>
+                </Col>
+                <Col lg={4} md={4} className='py-4'>
+                  <ins
+                    class="adsbygoogle"
+                    style={{ display: 'inline-block', backgroundColor: 'gray', width: '100%', height: '100%', border: '1px solid black'}}
+                    data-ad-format="fluid"
+                    data-ad-layout-key="-6t+ed+2i-1n-4w"
+                    data-ad-client="ca-pub-6974751803479290"
+                    data-ad-slot="7242885259"></ins>
+                </Col>
+                <Col lg={4} md={4} className='py-4'>
+                  <ins
+                    class="adsbygoogle"
+                    style={{ display: 'inline-block', backgroundColor: 'gray', width: '100%', height: '100%', border: '1px solid black'}}
+                    data-ad-format="fluid"
+                    data-ad-layout-key="-6t+ed+2i-1n-4w"
+                    data-ad-client="ca-pub-6974751803479290"
+                    data-ad-slot="7242885259"></ins>
+                </Col>
+              </Row>
+            </Container>
           </Row>
         </Container>
 
