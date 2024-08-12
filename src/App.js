@@ -5,6 +5,7 @@ import { io } from 'socket.io-client';
 import './App.css';
 import { TabsGroupComponent } from './components/TabsGroupComponent';
 import { ChatContentComponent, ContainerNotificationToast, HeaderChatGroupComponent, ProfileSettingsComponent } from './components/index.js';
+import { AlertComponent } from './components/AlertComponent';
 
 
 function App() {
@@ -15,6 +16,8 @@ function App() {
 
   const [notifications, setNotifications] = useState([])
 
+  const [isConnected, setIsConnected] = useState(false);
+
   const [cookies, setCookie] = useCookies(['profile']);
 
   const [profile, setProfile] = useState(null);
@@ -24,6 +27,7 @@ function App() {
 
     socket.on('connect', () => {
       console.log("Connectado");
+      setIsConnected(true);
     });
 
     socket.on('connect_error', (error) => {
@@ -32,6 +36,7 @@ function App() {
 
     socket.on('disconnect', () => {
       console.log("Desconectado");
+      setIsConnected(false);
     });
 
     socket.on('updateUsersOnline', (payload) => {
@@ -197,7 +202,20 @@ function App() {
           notifications={notifications}
         />
 
-        <Container className='py-5 '>
+        <Container hidden={isConnected} className='py-5 '>
+
+          <AlertComponent 
+            type="danger" 
+            title="Não foi possivel se conectar" 
+            children={
+              <>
+                <iframe src="https://giphy.com/embed/vyTnNTrs3wqQ0UIvwE" width="100%" height="400" frameBorder="0" className="giphy-embed" allowFullScreen />
+              </>
+          } />
+ 
+        </Container>
+
+        <Container hidden={!isConnected} className='py-5 '>
 
           <Row>
             <Container className='py-5'>
